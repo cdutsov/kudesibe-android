@@ -64,6 +64,12 @@ public class MonitorService extends Service {
         String session = getCookie(Constants.SERVER_URL, "session");
         URL url = null;
         HttpURLConnection conn = null;
+        String token = null;
+        try {
+            token = getInternetData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             url = new URL(Constants.SERVER_URL + "update-location");
             conn = (HttpURLConnection) url.openConnection();
@@ -76,33 +82,36 @@ public class MonitorService extends Service {
                     e.printStackTrace();
                 }
             }
-            Log.d("TAG", getInternetData());
             conn.setRequestProperty("Cookie", "session=" + session);
-            String token = getInternetData();
+            conn.setRequestProperty("X-CSRFToken", token);
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
 
             DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
-            String parameters = "csrf_token=" + token
-                    + "longitude=" + "42.0"
-                    + "latitude=" + "30.0"
-                    + "accuracy=" + "100";
+            String parameters = "longitude=" + "42.0"
+                    + "&latitude=" + "30.0"
+                    + "&accuracy=" + "100";
 
             outputStream.writeBytes(parameters);
             outputStream.flush();
             outputStream.close();
 
+            int responseCode = conn.getResponseCode();
+            System.out.println("\nSending 'POST' request to URL : " + url);
+            System.out.println("Response Code : " + responseCode);
+
             //Get Response
             InputStream is = conn.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while((line = rd.readLine()) != null) {
                 response.append(line);
                 response.append('\r');
             }
             rd.close();
             Log.d(TAG, response.toString());
+            conn.disconnect();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,9 +179,12 @@ public class MonitorService extends Service {
         URL url = new URL(Constants.SERVER_URL + "csrf-token");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
-        conn.getDoInput();
         InputStream inputStream = conn.getInputStream();
+        int responseCode = conn.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url);
+        System.out.println("Response Code : " + responseCode);
         conn.disconnect();
+        String str = inputStream.toString();
         return inputStream.toString();
     }
 
