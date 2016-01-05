@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Who\'s There?</string>
+
+     <string name="gcm_send_message">Token retrieved and sent to server! You can now use gcmsender to
+        send downstream messages to this app.</string>
+    <string name="registering_message">Generating InstanceID token…</string>
+    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
+        sending the fetched token to the server or subscribing to the PubSub topic. Please try
+        running the sample again.</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="urlPulse">http://134.213.214.8/</string>
+    <string name="msg_gpsdisabled">GPS disabled</string>
+    <string name="no_connection">Enable WiFi or mobile data</string>
+    <string name="no_connection_title">Network Connection</string>
+    <string name="settings_button_text">Settings</string>
+    <string name="cancel_button_text">Cancel</string>
+
+</resources>
